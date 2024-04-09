@@ -11,7 +11,7 @@ Our approach integrates a diffusion model for realistic design generation and th
 In this repository, we provide code to generate novel plate designs to minimize vibration-energy.
 For a quick demo of the capabilities of our method without any manual setup, we prepared a notebook:
 
-<a href="https://colab.research.google.com/github/JanvDelden/diffusion_minimizing_vibrations/blob/main/Example_notebook_colab.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+<a href="https://colab.research.google.com/github/ecker-lab/diffusion_minimizing_vibrations/blob/main/Example_notebook_colab.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 Here, you are able to specify the loss function used to guide the denoising process. This enables designing plates to have low vibration energy in any frequency range. Please note, that the regression model used in this notebook has been trained on slightly more data than the one used to generate results in the paper, leading to slight differences in the generations.
 
