@@ -1,0 +1,16 @@
+# folders
+/tmp
+/results
+/experiments
+*plots
+*.pyc
+sandbox
+.vscode
+
+# package files and folders
+*.egg-info/
+build/
+dist/
+*.html
+
+wandb/
