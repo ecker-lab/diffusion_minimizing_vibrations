@@ -52,7 +52,7 @@ diffusion_plate_optim/generation_call.py --dir /path/to/save_directory \
   title={Minimizing Structural Vibrations via Guided Diffusion Design Optimization},
   author={van Delden, Jan and Schultz, Julius and Blech, Christopher and Langer, Sabine C and L{\"u}ddecke, Timo},
   booktitle={ICLR 2024 Workshop on AI4DifferentialEquations In Science},
-  url={https://openreview.net/forum?id=z4dcQodnoo}
+  url={https://openreview.net/forum?id=z4dcQodnoo},
   year={2024}
 }
 ```
