@@ -184,13 +184,19 @@ def diffusion_guidance(diffusion_net, regression_net, noise_scheduler, field_mea
             loss_function = loss_function_wrapper(100, 200)
         else:
             loss_function = loss_function_wrapper(0, 300)
-    scaler = amp.GradScaler(enabled=True)
 
     if image is None:
-        image = torch.randn((batch_size, 1, 64, 96)).cuda().requires_grad_() -0.1
+        image = torch.randn((batch_size, 1, 64, 96)).cuda().requires_grad_() - 0.1
     image_snapshots = []
     regression_net.eval(), diffusion_net.eval()
     for iteration, timestep in enumerate(np.arange(n_steps)[::-1]):
+        # compute gradient
+        with amp.autocast():
+            prediction, recon_img = get_prediction_from_model(image, regression_net, field_mean, field_std)
+            image_old = get_recon_image(image)[0][0].detach().cpu()
+            loss, n_sum_elements = loss_function(prediction)
+        grad = torch.autograd.grad(loss, image)
+
         #do diffusion
         image_old = get_recon_image(image)[0][0].detach().cpu()
         if do_diffusion:
@@ -198,19 +204,13 @@ def diffusion_guidance(diffusion_net, regression_net, noise_scheduler, field_mea
                 model_output = diffusion_net(image, timestep).sample
                 image = noise_scheduler.step(model_output, timestep, image).prev_sample.requires_grad_()
 
-        gradient_diff_norm = torch.linalg.norm(image_old - get_recon_image(image)[0][0].detach().cpu())
+        img = get_recon_image(image)[0][0].detach().cpu()
+        gradient_diff_norm = torch.linalg.norm(image_old - img)
 
-        # do optim
-        with amp.autocast():  # Enable mixed precision
-            prediction, recon_img = get_prediction_from_model(image, regression_net, field_mean, field_std)
-            image_old = get_recon_image(image)[0][0].detach().cpu()
-            loss, n_sum_elements = loss_function(prediction)
-
-        # update step
-        grad = torch.autograd.grad(loss, image)
+        # perform step
         image = image - grad[0] * cosine_scheduler(iteration, n_steps, 1e-2, 1e-4)
         recon_img = get_recon_image(image)
-        gradient_norm = torch.linalg.norm(image_old - recon_img[0][0].detach().cpu())
+        gradient_norm = torch.linalg.norm(img - recon_img[0][0].detach().cpu())
 
         image_snapshots.append((recon_img.detach().cpu().numpy(), prediction.detach().cpu().numpy()))
         if image.grad is not None:
