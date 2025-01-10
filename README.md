@@ -32,7 +32,6 @@ To train the diffusion model:
 
 ``
 python diffusion_plate_optim/train_diffusion.py --save_dir /path/to/save_directory
-python diffusion_plate_optim/train_diffusion.py --save_dir /home/nimdelde/scratch/experiments/generative_plates/debug
 ``
 
 To generate new plate designs:
